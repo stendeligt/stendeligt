@@ -11,25 +11,41 @@
     <p>Meetgegevens: <span id="arduinoData"></span></p>
 
     <script>
-        // Verbinding maken met de WebSocket-server
-        const socket = new WebSocket('wss://example.com'); // Vervang 'example.com' door het adres van je WebSocket-server
+        // Functie om gegevens van de Arduino op te halen via een AJAX-verzoek
+        function fetchData() {
+            // Maak een XMLHttpRequest-object aan
+            const xhr = new XMLHttpRequest();
+            
+            // Specificeer de URL van de externe bron
+            const url = 'https://stendeligt.github.io/'; // Vervang 'example.com' door de URL van jouw externe bron
+            
+            // Stel de methode en URL in voor het verzoek
+            xhr.open('GET', url, true);
+            
+            // Definieer de callback-functie die wordt aangeroepen wanneer het verzoek is voltooid
+            xhr.onload = function() {
+                // Controleer of het verzoek succesvol was (statuscode 200)
+                if (xhr.status === 200) {
+                    // Update de pagina met de ontvangen gegevens
+                    document.getElementById('arduinoData').innerText = xhr.responseText;
+                } else {
+                    // Toon een foutmelding als het verzoek mislukt is
+                    console.error('Fout bij het ophalen van gegevens:', xhr.statusText);
+                }
+            };
+            
+            // Definieer de callback-functie voor het geval er een fout optreedt tijdens het verzoek
+            xhr.onerror = function() {
+                console.error('Netwerkfout bij het ophalen van gegevens.');
+            };
+            
+            // Stuur het verzoek
+            xhr.send();
+        }
 
-        // Wanneer de verbinding tot stand komt
-        socket.addEventListener('open', function (event) {
-            console.log('WebSocket-verbinding geopend');
-        });
-
-        // Wanneer een bericht van de server wordt ontvangen
-        socket.addEventListener('message', function (event) {
-            console.log('Bericht ontvangen van server:', event.data);
-            // Voeg de ontvangen gegevens toe aan de pagina
-            document.getElementById('arduinoData').innerText = event.data;
-        });
-
-        // Wanneer er een fout optreedt
-        socket.addEventListener('error', function (event) {
-            console.error('WebSocket-fout:', event);
-        });
+        // Voer de fetchData-functie uit bij het laden van de pagina en herhaal deze elke 5 seconden
+        fetchData();
+        setInterval(fetchData, 5000); // Herhaal elke 5 seconden (5000 milliseconden)
     </script>
 
 </body>
