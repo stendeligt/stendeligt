@@ -8,7 +8,29 @@
 <body>
 
     <h1>Centrale opslag</h1>
-    <p>Meetgegevens: </p>
+    <p>Meetgegevens: <span id="arduinoData"></span></p>
+
+    <script>
+        // Verbinding maken met de WebSocket-server
+        const socket = new WebSocket('wss://example.com'); // Vervang 'example.com' door het adres van je WebSocket-server
+
+        // Wanneer de verbinding tot stand komt
+        socket.addEventListener('open', function (event) {
+            console.log('WebSocket-verbinding geopend');
+        });
+
+        // Wanneer een bericht van de server wordt ontvangen
+        socket.addEventListener('message', function (event) {
+            console.log('Bericht ontvangen van server:', event.data);
+            // Voeg de ontvangen gegevens toe aan de pagina
+            document.getElementById('arduinoData').innerText = event.data;
+        });
+
+        // Wanneer er een fout optreedt
+        socket.addEventListener('error', function (event) {
+            console.error('WebSocket-fout:', event);
+        });
+    </script>
 
 </body>
 </html>
